@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * Array based storage for Resumes
  */
@@ -7,36 +9,53 @@ public class ArrayStorage {
 
     void clear() {
         if (size != 0) {
-            for (int i = 0; i < size; i++) {
-                storage[i] = null;
-            }
+            Arrays.fill(storage, null);
         }
         size = 0;
     }
 
+    void update(Resume r) {
+        for (int i = 0; i < size; i++) {
+            Resume resume = storage[i];
+            if (resume.uuid.equals(r.uuid)) {
+                storage[i] = r;
+            } else {
+                System.out.println("Резюме не существует!");
+            }
+        }
+    }
+
     void save(Resume r) {
-        storage[size] = r;
-        size++;
+        if (size == 0) {
+            storage[size] = r;
+            size++;
+        } else if (size >= storage.length) {
+            System.out.println("Ошибка!Переполнение!");
+        } else {
+            int index = getIndex(r.uuid);
+            if (index < 0) {
+                storage[size] = r;
+                size++;
+            } else {
+                System.out.println("Ошибка! Резюме уже существует!" + r.uuid);
+            }
+        }
     }
 
     Resume get(String uuid) {
-        for (int i = 0; i < size; i++) {
-            Resume resume = storage[i];
-            if (resume.uuid.equals(uuid)) {
-                return resume;
-            }
+        int index = getIndex(uuid);
+        if (index >= 0) {
+            return storage[index];
         }
         return null;
     }
 
     void delete(String uuid) {
-        for (int i = 0; i < size; i++) {
-            Resume resume = storage[i];
-            if (resume.uuid.equals(uuid)) {
-                storage[i] = storage[size - 1];
-                storage[size - 1] = null;
-                size--;
-            }
+        int index = getIndex(uuid);
+        if (index >= 0) {
+            storage[index] = storage[size - 1];
+            storage[size - 1] = null;
+            size--;
         }
     }
 
@@ -46,9 +65,7 @@ public class ArrayStorage {
     Resume[] getAll() {
         if (size != 0) {
             Resume[] resumes = new Resume[size];
-            for (int i = 0; i < size; i++) {
-                resumes[i] = storage[i];
-            }
+            System.arraycopy(storage, 0, resumes, 0, size);
             return resumes;
         }
         return new Resume[0];
@@ -56,5 +73,15 @@ public class ArrayStorage {
 
     int size() {
         return size;
+    }
+
+    int getIndex(String uuid) {
+        for (int i = 0; i < size; i++) {
+            Resume resume = storage[i];
+            if (resume.uuid.equals(uuid)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
