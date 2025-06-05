@@ -9,7 +9,7 @@ public class ArrayStorage {
 
     void clear() {
         if (size != 0) {
-            Arrays.fill(storage, null);
+            Arrays.fill(storage, 0, size, null);
         }
         size = 0;
     }
