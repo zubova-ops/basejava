@@ -29,13 +29,6 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         storage[(Integer) index] = r;
     }
 
-    /**
-     * @return array, contains only Resumes in storage (without null)
-     */
-    public List<Resume> getAllSorted() {
-        return Arrays.asList(Arrays.copyOfRange(storage, 0, size));
-    }
-
     @Override
     protected void doSave(Resume r, Object index) {
         if (size == STORAGE_LIMIT) {
@@ -67,4 +60,9 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected abstract void insertElement(Resume r, int index);
 
     protected abstract Integer getSearchKey(String uuid);
+
+    @Override
+    public List<Resume> doCopyAll() {
+        return Arrays.asList(Arrays.copyOfRange(storage, 0, size));
+    }
 }
