@@ -19,7 +19,6 @@ public class MainFile {
             throw new RuntimeException("Error", e);
         }
 
-
         File dir = new File("./src/ru/javawebinar/basejava");
         System.out.println(dir.isDirectory());
         String[] list = dir.list();
@@ -34,5 +33,21 @@ public class MainFile {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        printFileNames(dir);
+    }
+
+    private static void printFileNames(File dir) {
+        File[] files = dir.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                System.out.println("Directory: " + file.getName());
+                printFileNames(file);
+            } else {
+                System.out.println("File: " + file.getName());
+            }
+
+        }
+
     }
 }
