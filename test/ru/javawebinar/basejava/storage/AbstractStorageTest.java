@@ -4,8 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
-import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.model.*;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +31,26 @@ public abstract class AbstractStorageTest {
         RESUME_2 = new Resume(UUID_2, "Name2");
         RESUME_3 = new Resume(UUID_3, "Name3");
         RESUME_4 = new Resume(UUID_4, "Name4");
+
+        RESUME_1.addContact(ContactType.PHONE, "89966393181");
+        RESUME_1.addSection(SectionType.PERSONAL, new ListSection(Arrays.asList("Коммуникабельный", "Трудолюбивый")));
+        RESUME_1.addContact(ContactType.MAIL, "staszubov301995@mail.ru");
+        RESUME_1.addContact(ContactType.SKYPE, "staszubov.@skype.com");
+        RESUME_1.addSection(SectionType.OBJECTIVE, new TextSection("Objective1"));
+        RESUME_1.addSection(SectionType.ACHIEVEMENT, new ListSection(Arrays.asList("Achievement11", "Achievement12", "Achievement13")));
+        RESUME_1.addSection(SectionType.QUALIFICATIONS, new ListSection(Arrays.asList("Java", "JavaScript", "SQL")));
+        RESUME_1.addSection(SectionType.EXPERIENCE, new OrganizationSection(List.of(
+                new Organization(new Link("Inotex", "www.inotex.ru"),
+                        List.of(new Organization.Position(
+                                LocalDate.of(2012, 12, 1),
+                                LocalDate.of(2024, 10, 14),
+                                "Programmer", "progau"),
+                                new Organization.Position(LocalDate.of(2024, 12, 10),
+                                LocalDate.of(2025,5,5),"Analitic", "analitu"))))));
+        RESUME_1.addSection(SectionType.EDUCATION, new OrganizationSection(
+                List.of(new Organization(new Link("College", "www.mgu.ru"),
+                        List.of(new Organization.Position(LocalDate.of(2000, 10 , 2),
+                                LocalDate.of(2003, 4, 12), "student", "Study"))))));
     }
 
     protected AbstractStorageTest(Storage storage) {
