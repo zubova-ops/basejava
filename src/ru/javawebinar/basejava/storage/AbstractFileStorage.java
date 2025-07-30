@@ -5,6 +5,7 @@ import ru.javawebinar.basejava.model.Resume;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,12 +29,21 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-
+        File[] resumes = directory.listFiles();
+        if (resumes != null) {
+            for (File item : resumes) {
+                doDelete(item);
+            }
+        }
     }
 
     @Override
     public int size() {
-        return 0;
+        File[] resumes = directory.listFiles();
+        if (resumes != null) {
+            return resumes.length;
+        }
+        throw new StorageException("Directory not exist", null);
     }
 
     @Override
@@ -43,7 +53,11 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     protected void doUpdate(Resume r, File file) {
-
+        try {
+            doWrite(r, file);
+        } catch (IOException e) {
+            throw new StorageException("File write error", r.getUuid(), e);
+        }
     }
 
     @Override
@@ -63,18 +77,34 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     protected abstract void doWrite(Resume r, File file) throws IOException;
 
+    protected abstract Resume doRead(File file) throws IOException;
+
     @Override
     protected Resume doGet(File file) {
-        return null;
+        try {
+            return doRead(file);
+        } catch (IOException e) {
+            throw new StorageException("File read error", file.getName(), e);
+        }
     }
 
     @Override
     protected void doDelete(File file) {
-
+        if (!file.delete()) {
+            throw new StorageException("File delete error", file.getName());
+        }
     }
 
     @Override
     protected List<Resume> doCopyAll() {
-        return null;
+        File[] resumes = directory.listFiles();
+        if (resumes == null) {
+            throw new StorageException("Directory not exist", null);
+        }
+        List<Resume> list = new ArrayList(resumes.length);
+        for (File item : resumes) {
+            list.add(doGet(item));
+        }
+        return list;
     }
 }
