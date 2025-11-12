@@ -41,7 +41,7 @@ public class Config {
 
     private static File getHomeDir() {
         String prop = System.getProperty("homeDir");
-        File homeDir = new File(prop == null ? "." : prop);
+        File homeDir = new File("D:\\soft\\java\\study\\dasha\\java-ops\\basejava\\");
         if (!homeDir.isDirectory()) {
             throw new IllegalStateException(homeDir + " is not directory");
         }
